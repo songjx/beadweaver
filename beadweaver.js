@@ -1,8 +1,9 @@
 window.onload = function() {
     console.log("hello world")
+    var xmlns = "http://www.w3.org/2000/svg"
     var embedSvg = document.getElementById("patternSvg").contentDocument
     var svgNode = embedSvg.getElementById("svg")
-    var beadNode = document.createElementNS("http://www.w3.org/2000/svg", "use")
+    var beadNode = document.createElementNS(xmlns, "use")
     beadNode.setAttribute("href", "#singleBead");
     generateBeadGrid(svgNode, beadNode, 20, 8)
 }
