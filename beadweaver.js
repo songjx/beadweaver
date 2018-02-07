@@ -16,8 +16,8 @@ function setSvgDimensions(svg, width, height, unit) {
 function generateBeadGrid(svg, beadNode, rows, columns) {
     var beadWidth = 13
     var beadHeight = 16
-    var xPadding = 0
-    var yPadding = .3
+    var xPadding = -1
+    var yPadding = 0
     var screenUnit = "pt"
     var svgWidth = beadWidth*columns + xPadding*(columns - 1)
     var svgHeight = beadHeight*(rows + 0.5) + yPadding*(rows - 1 + 0.5)
@@ -29,6 +29,12 @@ function generateBeadGrid(svg, beadNode, rows, columns) {
             var newBeadNode = beadNode.cloneNode()
             newBeadNode.setAttribute("x", xPos)
             newBeadNode.setAttribute("y", yPos)
+            if (i%2) {
+                newBeadNode.setAttribute("class", "bead-1")
+            }
+            else {
+                newBeadNode.setAttribute("class", "bead-2")
+            }
             svg.appendChild(newBeadNode)
         }
     }
