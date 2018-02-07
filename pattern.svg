@@ -10,65 +10,61 @@
     height="16mm">
     <defs
         id="defs">
+    <path id="beadShape"
+        d="m 12,0 C 12.85,4 12.85,12 12,16 H 1 C 0.15,12 0.15,4 1,0 Z" />
     <linearGradient
-        id="linearGradient1">
-        <stop
-            id="stop1"
-            offset="0"
-            style="stop-color:#000;stop-opacity:.5;" />
-        <stop
-            id="stop2"
-            offset="1"
-            style="stop-color:#000;stop-opacity:0;" />
-    </linearGradient>
-    <linearGradient
+        id="shadowGradient"
         spreadMethod="pad"
-        y2="8"
-        x2="6.5"
+        x1="0"
         y1="16"
-        x1="6.5"
-        gradientUnits="userSpaceOnUse"
-        id="linearGradient2"
-        href="#linearGradient1" />
-    <linearGradient
-        id="linearGradient3">
+        x2="0"
+        y2="8"
+        gradientUnits="userSpaceOnUse" >
         <stop
-            id="stop1"
             offset="0"
-            style="stop-color:#FFF;stop-opacity:0;" />
+            stop-color="#000"
+            stop-opacity=".5" />
         <stop
-            id="stop2"
             offset="1"
-            style="stop-color:#FFF;stop-opacity:.3;" />
+            stop-color="#000"
+            stop-opacity="0" />
     </linearGradient>
     <linearGradient
+        id="highlightGradient"
         spreadMethod="pad"
-        y2="2"
-        x2="6.5"
+        x1="0"
         y1="8"
-        x1="6.5"
-        gradientUnits="userSpaceOnUse"
-        id="linearGradient4"
-        href="#linearGradient3" />
+        x2="0"
+        y2="2"
+        gradientUnits="userSpaceOnUse" >
+        <stop
+            offset="0"
+            stop-color="#FFF"
+            stop-opacity="0" />
+        <stop
+            offset="1"
+            stop-color="#FFF"
+            stop-opacity="0.3" />
+    </linearGradient>
     <g
-        id="singleBead" >
-        <path
-            class="beadColor"
-            d="m 12,0.3 C 12.85,4 12.85,12 12,15.7 H 1 C 0.15,12 0.15,4 1,0.3 Z"
-            stroke-width="0.6"
-            stroke="#333" />
-        <path
+        id="singleBead">
+        <use
+            href="#beadShape"
+            class="beadColor" />
+        <use
+            href="#beadShape"
             class="beadShadow"
-            d="m 12,0.3 C 12.85,4 12.85,12 12,15.7 H 1 C 0.15,12 0.15,4 1,0.3 Z"
+            fill="url(#shadowGradient)" />
+        <use
+            href="#beadShape"
+            class="beadHighlight"
+            fill="url(#highlightGradient)" />
+        <use
+            href="#beadShape"
             stroke-width="0.6"
             stroke="#333"
-            fill="url(#linearGradient2)" />
-        <path
-            class="beadhighlight"
-            d="m 12,0.3 C 12.85,4 12.85,12 12,15.7 H 1 C 0.15,12 0.15,4 1,0.3 Z"
-            stroke-width="0.6"
-            stroke="#333"
-            fill="url(#linearGradient4)" />
+            stroke-linejoin="round"
+            fill-opacity="0" />
     </g>
     </defs>
 </svg>
