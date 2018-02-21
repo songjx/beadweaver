@@ -3,10 +3,11 @@ window.onload = function() {
     var embedSvg = document.getElementById("patternSvg").contentDocument
     var svgNode = embedSvg.getElementById("svg")
     var beadNode = svgNode.getElementById("singleBead")
+    var beadClasses = generateBeadClasses()
     beadNode.removeAttribute("id")
     var beadArray = generateBeadGrid(svgNode, beadNode, 20, 8)
-    beadArray[3][3].setAttribute("class", "bead-3")
-    setBeadRange(5, undefined, 5, 7, beadArray, "bead-3")
+    beadArray[3][3].setAttribute("class", beadClasses[2])
+    setBeadRange(5, undefined, 5, 7, beadArray, beadClasses[2])
 }
 
 function setSvgDimensions(svg, width, height, unit) {
@@ -40,6 +41,7 @@ function generateBeadGrid(svg, beadNode, rows, columns) {
             else {
                 newBeadNode.setAttribute("class", "bead-2")
             }
+            newBeadNode.onclick = beadClick
             svg.appendChild(newBeadNode)
             row.push(newBeadNode)
         }
@@ -58,4 +60,13 @@ function setBeadRange(row1, row2, column1, column2, beadArray, setClass) {
         }
     }
 
+}
+
+function beadClick(event) {
+    event.currentTarget.setAttribute("class", "bead-1")
+}
+
+function generateBeadClasses() {
+    var beadClasses = ["bead-1", "bead-2", "bead-3"]
+    return beadClasses
 }

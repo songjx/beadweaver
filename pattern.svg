@@ -61,6 +61,7 @@
             fill="url(#highlightGradient)" />
         <use
             href="#beadShape"
+            class="beadOutline"
             stroke-width="0.6"
             stroke="#333"
             stroke-linejoin="round"

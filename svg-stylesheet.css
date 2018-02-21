@@ -1,18 +1,18 @@
-.bead-1 .beadColor {
+.bead-0 .beadColor {
     /* flat cornflowerBlue */
     fill: cornflowerBlue;
 }
-.bead-1 .beadShadow {
+.bead-0 .beadShadow {
     display: none;
 }
-.bead-1 .beadHighlight {
+.bead-0 .beadHighlight {
     display: none;
 }
-.bead-2 {
+.bead-1 {
     /* matte darkSlateBlue */
     fill: darkSlateBlue;
 }
-.bead-3 {
+.bead-2 {
     /* matte lightCyan */
     fill: lightCyan;
 }
