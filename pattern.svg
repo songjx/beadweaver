@@ -10,62 +10,62 @@
     height="16mm">
     <defs
         id="defs">
-    <path id="beadShape"
-        d="m 12,0 C 12.85,4 12.85,12 12,16 H 1 C 0.15,12 0.15,4 1,0 Z" />
-    <linearGradient
-        id="shadowGradient"
-        spreadMethod="pad"
-        x1="0"
-        y1="16"
-        x2="0"
-        y2="8"
-        gradientUnits="userSpaceOnUse" >
-        <stop
-            offset="0"
-            stop-color="#000"
-            stop-opacity=".5" />
-        <stop
-            offset="1"
-            stop-color="#000"
-            stop-opacity="0" />
-    </linearGradient>
-    <linearGradient
-        id="highlightGradient"
-        spreadMethod="pad"
-        x1="0"
-        y1="8"
-        x2="0"
-        y2="2"
-        gradientUnits="userSpaceOnUse" >
-        <stop
-            offset="0"
-            stop-color="#FFF"
-            stop-opacity="0" />
-        <stop
-            offset="1"
-            stop-color="#FFF"
-            stop-opacity="0.3" />
-    </linearGradient>
-    <g
-        id="singleBead">
-        <use
-            href="#beadShape"
-            class="beadColor" />
-        <use
-            href="#beadShape"
-            class="beadShadow"
-            fill="url(#shadowGradient)" />
-        <use
-            href="#beadShape"
-            class="beadHighlight"
-            fill="url(#highlightGradient)" />
-        <use
-            href="#beadShape"
-            class="beadOutline"
-            stroke-width="0.6"
-            stroke="#333"
-            stroke-linejoin="round"
-            fill-opacity="0" />
-    </g>
+        <path id="beadShape"
+            d="m 12,0 C 12.85,4 12.85,12 12,16 H 1 C 0.15,12 0.15,4 1,0 Z" />
+        <linearGradient
+            id="shadowGradient"
+            spreadMethod="pad"
+            x1="0"
+            y1="16"
+            x2="0"
+            y2="8"
+            gradientUnits="userSpaceOnUse" >
+            <stop
+                offset="0"
+                stop-color="#000"
+                stop-opacity=".5" />
+            <stop
+                offset="1"
+                stop-color="#000"
+                stop-opacity="0" />
+        </linearGradient>
+        <linearGradient
+            id="highlightGradient"
+            spreadMethod="pad"
+            x1="0"
+            y1="8"
+            x2="0"
+            y2="2"
+            gradientUnits="userSpaceOnUse" >
+            <stop
+                offset="0"
+                stop-color="#FFF"
+                stop-opacity="0" />
+            <stop
+                offset="1"
+                stop-color="#FFF"
+                stop-opacity="0.3" />
+        </linearGradient>
+        <g
+            id="singleBead">
+            <use
+                href="#beadShape"
+                class="beadColor" />
+            <use
+                href="#beadShape"
+                class="beadShadow"
+                fill="url(#shadowGradient)" />
+            <use
+                href="#beadShape"
+                class="beadHighlight"
+                fill="url(#highlightGradient)" />
+            <use
+                href="#beadShape"
+                class="beadOutline"
+                stroke-width="0.6"
+                stroke="#333"
+                stroke-linejoin="round"
+                fill-opacity="0" />
+        </g>
     </defs>
 </svg>
