@@ -1,69 +1,97 @@
 window.onload = function() {
-    console.log("hello world")
     var embedSvg = document.getElementById("patternSvg").contentDocument
     var svgNode = embedSvg.getElementById("svg")
     var beadNode = svgNode.getElementById("singleBead")
     beadNode.removeAttribute("id")
-    var beadingPattern = new Pattern(svgNode, beadNode)
-    var beadArray = beadingPattern.generateBeadGrid(beadNode, 20, 8)
-    beadArray[3][3].setAttribute("class", beadingPattern.beadClasses[2])
-    setBeadRange(5, undefined, 5, 7, beadArray, beadingPattern.beadClasses[2])
+    var bead = new Bead(beadNode)
+    var beadingPattern = new Pattern(svgNode, bead)
+    setBeadRange(0, undefined, 0, undefined, beadingPattern.beadArray.beadArray, beadingPattern.beadStyles[0].cssClassName)
+    beadingPattern.beadArray.beadArray[3][3].setAttribute("class", beadingPattern.beadStyles[2].cssClassName)
+    setBeadRange(5, undefined, 5, 7, beadingPattern.beadArray.beadArray, beadingPattern.beadStyles[2].cssClassName)
 }
 
-function Pattern(svgNode, beadNode) {
-    this.svg = svgNode
-    this.beadNode = beadNode
-    this.beadClasses = ["bead-0", "bead-1", "bead-2"]
-    this.setSvgDimensions = function(width, height, unit) {
-        this.svg.setAttribute("width", String(width) + unit)
-        this.svg.setAttribute("height", String(height) + unit)
-        this.svg.setAttribute("viewBox", "0 0 " + String(width) + " " + String(height))
+class Bead {
+    constructor(beadNode) {
+        this.beadNode = beadNode
+        this.width = 13
+        this.height = 16
+        this.strokeWidth = 0.6
     }
-    this.beadClick = function(beadNode, newClass) {
-        beadNode.setAttribute("class", newClass)
+}
+
+class Style {
+    constructor(index) {
+        this.cssClassName = "bead-" + String(index)
+        // this.color = "cornflowerBlue"
+        // this.texture = "matte" // gloss, satin, flat
     }
-    this.generateBeadGrid = function(beadNode, rows, columns) {
-        var beadWidth = 13
-        var beadHeight = 16
-        var xPadding = -1
-        var yPadding = 0
-        var screenUnit = "pt"
-        var strokeWidth = 0.6
-        var svgWidth = beadWidth*columns + xPadding*(columns - 1)
-        var svgHeight = beadHeight*(rows + 0.5) + yPadding*(rows - 1 + 0.5) + strokeWidth
-        this.setSvgDimensions(svgWidth, svgHeight, screenUnit)
-        var beadArray = []
-        for (i = 0; i < rows; i++) {
+}
+
+class BeadArray {
+    constructor(bead, rows, columns) {
+        this.xPadding = -1
+        this.yPadding = 0
+        this.rows = rows
+        this.columns = columns
+        this.bead = bead
+        this.width = this.xCoord(columns) - this.xPadding
+        this.height = bead.strokeWidth + bead.height*rows + this.yPadding*rows + (bead.height + this.yPadding/2)/2
+        this.beadArray = []
+        this.beadArrayNode = document.createElementNS("http://www.w3.org/2000/svg", "g")
+        this.beadArrayNode.setAttribute("class", "bead-array")
+        for (var i = 0; i < rows; i++) {
             var row = []
-            for (j = 0; j < columns; j++) {
-                var xPos = beadWidth * j + xPadding * j
-                // ugly...
-                var yPos = strokeWidth/2 + beadHeight*i + yPadding*i + (j%2)/2 * (beadHeight + yPadding/2)
-                var newBeadNode = beadNode.cloneNode(true)
-                newBeadNode.setAttribute("transform", "translate(" + String(xPos) + " " + String(yPos) + ")")
-                newBeadNode.setAttribute("class", this.beadClasses[0])
-                var context = this
-                newBeadNode.addEventListener(
-                    "click",
-                    function(event) {
-                        return context.beadClick(event.currentTarget, context.beadClasses[1])
-                    }
-                )
-                this.svg.appendChild(newBeadNode)
+            for (var j = 0; j < columns; j++) {
+                var newBeadNode = this.bead.beadNode.cloneNode(true)
+                newBeadNode.setAttribute("transform", "translate(" + String(this.xCoord(j)) + " " + String(this.yCoord(i, j)) + ")")
+                this.beadArrayNode.appendChild(newBeadNode)
                 row.push(newBeadNode)
             }
-            beadArray.push(row)
+            this.beadArray.push(row)
         }
-        return beadArray
+    }
+    xCoord(col) {return this.bead.width*col + this.xPadding*col}
+    yCoord(row, col) {return this.bead.strokeWidth/2 + this.bead.height*row + this.yPadding*row + (col%2)/2 * (this.bead.height + this.yPadding/2)}
+}
+
+class Pattern {
+    constructor(svgNode, bead) {
+        this.svg = svgNode
+        this.beadStyles = [new Style(0), new Style(1), new Style(2)]
+        this.beadArray = new BeadArray(bead, 20, 8)
+        var context = this
+        this.beadArray.beadArray.forEach(function(row) {
+            row.forEach(function(beadEl) {
+                beadEl.addEventListener(
+                    "click",
+                    function(event) {
+                        return context.beadClick(event.currentTarget, context.beadStyles[1].cssClassName)
+                    }
+                )
+            })
+        })
+        this.generateBeadGrid(this.beadArray)
+    }
+    setSvgDimensions(width, height, unit) {
+        this.svg.setAttribute("width", "100%")
+        this.svg.setAttribute("height", "100%")
+        this.svg.setAttribute("viewBox", "0 0 " + String(width*5) + " " + String(height))
+    }
+    beadClick(beadNode, newClass) {
+        beadNode.setAttribute("class", newClass)
+    }
+    generateBeadGrid(beadArray) {
+        this.svg.appendChild(beadArray.beadArrayNode)
+        this.setSvgDimensions(beadArray.width, beadArray.height, "pt")
     }
 }
 
 function setBeadRange(row1, row2, column1, column2, beadArray, setClass) {
     // slice beads of interest into beadRange
     var beadRowRange = beadArray.slice(row1, row2)
-    for (j = 0; j < beadRowRange.length; j++) {
+    for (var j = 0; j < beadRowRange.length; j++) {
         rowSlice = beadRowRange[j].slice(column1, column2)
-        for (i = 0; i < rowSlice.length; i++) {
+        for (var i = 0; i < rowSlice.length; i++) {
             rowSlice[i].setAttribute("class", setClass)
         }
     }
