@@ -1,9 +1,12 @@
-.bead-0 {
+.bead-0 .beadColor {
     fill: cornflowerBlue;
 }
-.bead-1 {
+.bead-1 .beadColor {
     fill: darkSlateBlue;
 }
-.bead-2 {
+.bead-2 .beadColor {
     fill: lightCyan;
+}
+.beadOutline:hover {
+    stroke: indianRed;
 }

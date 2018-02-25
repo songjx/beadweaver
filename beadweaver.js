@@ -55,7 +55,6 @@ class Chunk {
 class Pattern {
     constructor(svgNode, bead) {
         this.svg = svgNode
-        //this.beadStyles = [new Style(0), new Style(1), new Style(2)]
         this.beadStyles = this.defaultStyles(bead)
         this.activeStyle = this.beadStyles[1]
         this.chunk = new Chunk(bead, 20, 8)
@@ -84,7 +83,7 @@ class Pattern {
     setSvgDimensions(width, height, unit) {
         this.svg.setAttribute("width", "100%")
         this.svg.setAttribute("height", "100%")
-        this.svg.setAttribute("viewBox", "0 0 " + String(width*5) + " " + String(height))
+        this.svg.setAttribute("viewBox", "0 0 " + String(width*2) + " " + String(height))
     }
     beadClick(beadNode, newClass) {
         beadNode.setAttribute("class", newClass)
