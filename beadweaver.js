@@ -69,6 +69,14 @@ class Pattern {
                         context.beadClick(event.currentTarget, context.activeStyle.cssClassName)
                     }
                 )
+                beadEl.addEventListener(
+                    "mouseover",
+                    function(event) {
+                        if (event.buttons === 1) {
+                            context.beadClick(event.currentTarget, context.activeStyle.cssClassName)
+                        }
+                    }
+                )
             })
         })
         this.displayPattern()
@@ -108,7 +116,7 @@ class Pattern {
         for (var i = 0; i < this.beadStyles.length; i++) {
             var paletteBeadNode = bead.beadNode.cloneNode(true)
             paletteBeadNode.setAttribute("class", this.beadStyles[i].cssClassName)
-            paletteBeadNode.setAttribute("transform", "translate(" + String(i*bead.width*1.2) + " 0)")
+            paletteBeadNode.setAttribute("transform", "translate(" + String(i*bead.width*1.2) + " 3)")
             paletteBeadNode.addEventListener(
                 "click",
                 context.paletteClick(context, i)
