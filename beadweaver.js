@@ -1,8 +1,27 @@
 window.onload = function() {
     [svgNode, beadNode] = getNodes()
     var bead = new Bead(beadNode)
+    var peyoteChunk = new Chunk(20, 8)
     var pattern = new Pattern(svgNode)
-    setBeadRange(0, undefined, 0, undefined, pattern.chunk.beadArray, pattern.beadStyles[0].cssClassName)
+    setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[0])
+    peyoteChunk.beadArray.forEach(
+        function(row, i) {
+            row.forEach(function(beadEl, j) {
+                beadEl.beadNode.addEventListener(
+                    "click",
+                    function() {
+                        peyoteChunk.beadArray[i][j].setStyle(pattern.activeStyle)
+                    })
+                beadEl.beadNode.addEventListener(
+                    "mouseover",
+                    function(event) {
+                        if (event.buttons === 1) {
+                            peyoteChunk.beadArray[i][j].setStyle(pattern.activeStyle)
+                        }
+                    })
+            })
+        })
+    pattern.displayPattern(peyoteChunk)
 }
 
 const beadDefs = {
@@ -20,11 +39,11 @@ function getNodes() {
 }
 
 class Bead {
-    constructor(beadNode) {
-        this.beadNode = beadNode.cloneNode(true)
+    constructor(node) {
+        this.beadNode = node.cloneNode(true)
     }
     setStyle(style) {
-        this.beadNode.setAttribute("class", style)
+        this.beadNode.setAttribute("class", style.cssClassName)
     }
 }
 
@@ -46,7 +65,7 @@ class Chunk {
         this.width = this.xCoord(columns) - this.xPadding
         this.height = beadDefs.strokeWidth + beadDefs.height*rows + this.yPadding*rows + (beadDefs.height + this.yPadding/2)/2
         this.beadArray = []
-        this.beadArrayNode = document.createElementNS("http://www.w3.org/2000/svg", "g")
+        this.beadArrayNode = newSvgGroup()
         this.beadArrayNode.setAttribute("class", "bead-array")
         for (var i = 0; i < rows; i++) {
             var row = []
@@ -68,36 +87,13 @@ class Pattern {
         this.svg = svgNode
         this.beadStyles = this.defaultStyles()
         this.activeStyle = this.beadStyles[1]
-        this.chunk = new Chunk(20, 8)
         this.palette = this.makePalette()
-        var context = this
-        this.chunk.beadArray.forEach(function(row) {
-            row.forEach(function(beadEl) {
-                beadEl.beadNode.addEventListener(
-                    "click",
-                    function(event) {
-                        context.beadClick(event.currentTarget, context.activeStyle.cssClassName)
-                    }
-                )
-                beadEl.beadNode.addEventListener(
-                    "mouseover",
-                    function(event) {
-                        if (event.buttons === 1) {
-                            context.beadClick(event.currentTarget, context.activeStyle.cssClassName)
-                        }
-                    }
-                )
-            })
-        })
-        this.displayPattern()
+        //this.displayPattern()
     }
     setSvgDimensions(width, height, unit) {
         this.svg.setAttribute("width", "100%")
         this.svg.setAttribute("height", "100%")
         this.svg.setAttribute("viewBox", "0 0 " + String(width*2) + " " + String(height))
-    }
-    beadClick(beadNode, newClass) {
-        beadNode.setAttribute("class", newClass)
     }
     paletteClick(context, index) {
         var eventHandler = function() {
@@ -105,10 +101,10 @@ class Pattern {
         }
         return eventHandler
     }
-    displayPattern() {
-        this.svg.appendChild(this.chunk.beadArrayNode)
+    displayPattern(chunk) {
+        this.svg.appendChild(chunk.beadArrayNode)
         this.svg.appendChild(this.palette)
-        this.setSvgDimensions(this.chunk.width, this.chunk.height, "pt")
+        this.setSvgDimensions(chunk.width, chunk.height, "pt")
     }
     defaultStyles() {
         var styles = []
@@ -119,13 +115,13 @@ class Pattern {
         return styles
     }
     makePalette() {
-        var paletteNode = document.createElementNS("http://www.w3.org/2000/svg", "g")
+        var paletteNode = newSvgGroup()
         paletteNode.setAttribute("id", "palette")
-        paletteNode.setAttribute("transform", "translate(" + String(this.chunk.width * 1.5) + ")")
+        paletteNode.setAttribute("transform", "translate(" + 160 + ")")
         var context = this
         for (var i = 0; i < this.beadStyles.length; i++) {
             var paletteBead = new Bead(beadNode)
-            paletteBead.setStyle(this.beadStyles[i].cssClassName)
+            paletteBead.setStyle(this.beadStyles[i])
             paletteBead.beadNode.setAttribute("transform", "translate(" + String(i*beadDefs.width*1.2) + " 3)")
             paletteBead.beadNode.addEventListener(
                 "click",
@@ -140,10 +136,18 @@ class Pattern {
 function setBeadRange(row1, row2, column1, column2, beadArray, style) {
     // slice beads of interest into beadRange
     var beadRowRange = beadArray.slice(row1, row2)
-    for (var j = 0; j < beadRowRange.length; j++) {
-        rowSlice = beadRowRange[j].slice(column1, column2)
-        for (var i = 0; i < rowSlice.length; i++) {
-            rowSlice[i].setStyle(style)
-        }
-    }
+    beadRowRange.forEach(function(row) {
+        var rowSlice = row.slice(column1, column2)
+        rowSlice.forEach(function(bead) {
+            bead.setStyle(style)
+        })
+    })
+}
+
+function newSvgGroup() {
+    return document.createElementNS("http://www.w3.org/2000/svg", "g")
+}
+
+function beadClick(beadNode, newClass) {
+    beadNode.setAttribute("class", newClass)
 }
