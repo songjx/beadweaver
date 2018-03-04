@@ -6,21 +6,6 @@ window.onload = function() {
     var peyoteChunk = new Chunk(20, 8)
     pattern = new Pattern(svgNode)
     setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[0])
-    peyoteChunk.beadArray.forEach(
-        function(row, i) {
-            row.forEach(function(beadEl, j) {
-                beadEl.beadNode.addEventListener(
-                    "click",
-                    beadClick(peyoteChunk.beadArray[i][j], pattern.activeStyle))
-                beadEl.beadNode.addEventListener(
-                    "mouseover",
-                    function(event) {
-                        if (event.buttons === 1) {
-                            peyoteChunk.beadArray[i][j].setStyle(pattern.activeStyle)
-                        }
-                    })
-            })
-        })
     pattern.displayPattern(peyoteChunk)
     var ribbon = document.getElementById("ribbon")
     palette = makePalette(pattern.beadStyles)
@@ -76,9 +61,21 @@ class Chunk {
             }, this)
             return row
         }, this)
+        this.beadArray.forEach(
+            function(row, i) {
+                row.forEach(function(beadEl, j) {
+                    beadEl.beadNode.addEventListener(
+                        "mousedown",
+                        beadClick(this.beadArray[i][j]))
+                    beadEl.beadNode.addEventListener(
+                        "mouseover",
+                        beadMouseover(this.beadArray[i][j]))
+                }, this)
+            }, this)
     }
     xCoord(col) {return beadDefs.width*col + this.xPadding*col}
     yCoord(row, col) {return beadDefs.strokeWidth/2 + beadDefs.height*row + this.yPadding*row + (col%2)/2 * (beadDefs.height + this.yPadding/2)}
+
 }
 
 class Pattern {
@@ -86,12 +83,9 @@ class Pattern {
         this.svg = beadweaverSvg(svgNode)
         this.beadStyles = this.defaultStyles()
         this.activeStyle = this.beadStyles[1]
-        //this.palette = this.makePalette()
-        //this.displayPattern()
     }
     displayPattern(chunk) {
         this.svg.appendChild(chunk.beadArrayNode)
-        //this.svg.appendChild(this.palette)
         setViewBox(this.svg, chunk.width*2, chunk.height)
         var main = document.getElementById("main")
         main.appendChild(this.svg)
@@ -121,9 +115,17 @@ function newSvgGroup() {
     return document.createElementNS("http://www.w3.org/2000/svg", "g")
 }
 
-function beadClick(bead, style) {
+function beadClick(bead) {
     return function() {
-        bead.setStyle(style)
+        bead.setStyle(pattern.activeStyle)
+    }
+}
+
+function beadMouseover(bead) {
+    return function(event) {
+        if (event.buttons === 1) {
+            bead.setStyle(pattern.activeStyle)
+        }
     }
 }
 
@@ -145,8 +147,7 @@ function makeButton() {
     return function makeButtonCallback(style) {
         var button = document.createElement("div")
         button.setAttribute("class", "button")
-        var buttonNode = beadweaverSvg(svgNode)
-        var sizedButtonNode = setViewBox(buttonNode, beadDefs.width, beadDefs.height)
+        var buttonNode = setViewBox(beadweaverSvg(svgNode), beadDefs.width, beadDefs.height)
         var bead = new Bead(beadNode)
         bead.setStyle(style)
         buttonNode.appendChild(bead.beadNode)
@@ -168,4 +169,5 @@ function beadweaverSvg(node) {
 
 function setViewBox(svg, width, height) {
     svg.setAttribute("viewBox", "0 0 " + width + " " + height)
+    return svg
 }
