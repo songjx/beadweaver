@@ -8,7 +8,7 @@ body {
     margin: 0;
 }
 #ribbon {
-    width: 200px;
+    width: 16em;
     background-color: #DDD;
     padding: 1em;
 }
@@ -23,12 +23,17 @@ body {
 #palette {
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
 }
 .button {
     width: 1.5em;
-    margin: 0 .2em;
+    /* margin: 0 .2em; */
+    padding: .2em .3em;
+    border-radius: .5em;
 }
-
+.button.active {
+    background-color: white;
+}
 /*BEAD STYLES*/
 .bead-0 .beadColor {
     fill: cornflowerBlue;

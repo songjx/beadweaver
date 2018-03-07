@@ -10,7 +10,7 @@
     <defs
         id="defs">
         <path id="beadShape"
-            d="m 12,0 C 12.85,4 12.85,12 12,16 H 1 C 0.15,12 0.15,4 1,0 Z" />
+            d="m 12,0.3 C 12.85,4 12.85,12 12,15.7 H 1 C 0.15,12 0.15,4 1,0.3 Z" />
         <linearGradient
             id="shadowGradient"
             spreadMethod="pad"

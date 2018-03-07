@@ -8,7 +8,7 @@ window.onload = function() {
     setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[0])
     pattern.displayPattern(peyoteChunk)
     var ribbon = document.getElementById("ribbon")
-    palette = makePalette(pattern.beadStyles)
+    palette = new Palette(pattern.beadStyles)
     ribbon.appendChild(palette)
 }
 
@@ -47,7 +47,7 @@ class Style {
 class Chunk {
     constructor(rows, columns) {
         this.xPadding = -1
-        this.yPadding = 0
+        this.yPadding = -.3
         this.width = this.xCoord(columns) - this.xPadding
         this.height = beadDefs.strokeWidth + beadDefs.height*rows + this.yPadding*rows + (beadDefs.height + this.yPadding/2)/2
         this.beadArrayNode = newSvgGroup()
@@ -66,10 +66,10 @@ class Chunk {
                 row.forEach(function(beadEl, j) {
                     beadEl.beadNode.addEventListener(
                         "mousedown",
-                        beadClick(this.beadArray[i][j]))
+                        beadDraw(this.beadArray[i][j]))
                     beadEl.beadNode.addEventListener(
                         "mouseover",
-                        beadMouseover(this.beadArray[i][j]))
+                        beadDraw(this.beadArray[i][j]))
                 }, this)
             }, this)
     }
@@ -86,7 +86,7 @@ class Pattern {
     }
     displayPattern(chunk) {
         this.svg.appendChild(chunk.beadArrayNode)
-        setViewBox(this.svg, chunk.width*2, chunk.height)
+        setViewBox(this.svg, chunk.width, chunk.height)
         var main = document.getElementById("main")
         main.appendChild(this.svg)
     }
@@ -121,7 +121,7 @@ function beadClick(bead) {
     }
 }
 
-function beadMouseover(bead) {
+function beadDraw(bead) {
     return function(event) {
         if (event.buttons === 1) {
             bead.setStyle(pattern.activeStyle)
@@ -135,12 +135,20 @@ function paletteClick(pattern, style) {
     }
 }
 
-function makePalette(styles) {
-    var palette = document.createElement("div")
-    palette.setAttribute("id", "palette")
-    var buttons = pattern.beadStyles.map(makeButton())
-    buttons.forEach(function(button) {palette.appendChild(button)})
-    return palette
+class Palette {
+    constructor(styles) {
+        var palette = document.createElement("div")
+        palette.setAttribute("id", "palette")
+        this.buttons = pattern.beadStyles.map(makeButton())
+        this.buttons.forEach(function(button, i) {
+            button.addEventListener(
+                "click",
+                paletteClick(pattern, pattern.beadStyles[i])
+            )
+            palette.appendChild(button)
+        })
+        return palette
+    }
 }
 
 function makeButton() {
@@ -151,10 +159,6 @@ function makeButton() {
         var bead = new Bead(beadNode)
         bead.setStyle(style)
         buttonNode.appendChild(bead.beadNode)
-        button.addEventListener(
-            "click",
-            paletteClick(pattern, style)
-        )
         button.appendChild(buttonNode)
         return button
     }
