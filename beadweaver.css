@@ -11,7 +11,7 @@ body {
 #ribbon {
     width: 16em;
     background-color: #DDD;
-    padding: 1em;
+    padding: .8em;
 }
 #main {
     flex-basis: 100%;
@@ -22,21 +22,36 @@ body {
     height: 100%;
 }
 #active-bead {
+    padding: .2em .3em;
     width: 2.5em;
+}
+#bead-description {
+    font-style: italic;
+    font-size: 85%;
+    margin-left: .8em;
 }
 .palette {
     display: flex;
+    align-items: center;
     flex-direction: row;
     justify-content: space-around;
     border: 1px solid gray;
     border-radius: .6em;
     background-color: #FFF;
+    padding: .5em;
+}
+.palette-wrapper {
+    margin: .8em 0;
 }
 .button {
     width: 1.5em;
-    /* margin: 0 .2em; */
     padding: .2em .3em;
     border-radius: .5em;
+    height: auto;
+}
+#active-bead, .button {
+    display: flex;
+    align-items: center;
 }
 /*BEAD STYLES*/
 .bead-0 .beadColor {

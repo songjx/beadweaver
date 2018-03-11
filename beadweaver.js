@@ -41,7 +41,7 @@ class Bead {
 class Style {
     constructor(index) {
         this.cssClassName = "bead-" + index
-        // this.color = "cornflowerBlue"
+        this.prettyName = "Matte opaque cornflowerBlue"
         // this.texture = "matte" // gloss, satin, flat
     }
 }
@@ -134,21 +134,21 @@ function beadDraw(bead) {
 function paletteClick(pattern, style, active) {
     return function() {
         pattern.activeStyle = style
-        // console.log(active)
-        active.setStyle(style)
+        active.bead.bead.setStyle(style)
+        active.text = pattern.activeStyle.prettyName
     }
 }
 
 class Palette {
     constructor(text) {
         this.wrapper = document.createElement("div")
+        this.wrapper.setAttribute("class", "palette-wrapper")
         var name = document.createElement("div")
         this.palette = document.createElement("div")
         this.palette.setAttribute("class", "palette")
         name.innerHTML += text
         this.wrapper.appendChild(name)
         this.wrapper.appendChild(this.palette)
-        // return wrapper
     }
 }
 
@@ -156,10 +156,6 @@ function makeSwatch(styles) {
     var swatch = new Palette("Swatch")
     var buttons = pattern.beadStyles.map(makeButton())
     buttons.forEach(function(button, i) {
-        // button.div.addEventListener(
-        //     "click",
-        //     paletteClick(pattern, pattern.beadStyles[i])
-        // )
         swatch.palette.appendChild(button.div)
     })
     return swatch
@@ -170,7 +166,7 @@ function swatchListener(swatch, active) {
         console.log(active)
         button.addEventListener(
             "click",
-            paletteClick(pattern, pattern.beadStyles[i], active.bead.bead)
+            paletteClick(pattern, pattern.beadStyles[i], active)
         )
     })
 }
@@ -180,8 +176,12 @@ function showActiveStyle() {
     active.bead = new OneBead()
     active.bead.div.setAttribute("id", "active-bead")
     active.bead.bead.setStyle(pattern.activeStyle)
-    console.log(active.palette)
+    var description = document.createElement("div")
+    description.setAttribute("id", "bead-description")
+    active.text = document.createTextNode(pattern.activeStyle.prettyName)
+    description.appendChild(active.text)
     active.palette.appendChild(active.bead.div)
+    active.palette.appendChild(description)
     return active
 }
 
