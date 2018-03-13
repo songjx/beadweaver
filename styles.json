@@ -1,0 +1,17 @@
+[
+{
+    "prettyName": "Matte opaque cornflower blue",
+    "baseColor": "cornflowerBlue",
+    "cssClassName": "bead-0"
+},
+{
+    "prettyName": "Matte opaque dark slate blue",
+    "baseColor": "darkSlateBlue",
+    "cssClassName": "bead-1"
+},
+{
+    "prettyName": "Matte opaque light cyan",
+    "baseColor": "lightCyan",
+    "cssClassName": "bead-2"
+}
+]

@@ -2,16 +2,8 @@ var pattern
 
 window.onload = function() {
     [svgNode, beadNode] = getNodes()
-    var peyoteChunk = new Chunk(20, 8)
     pattern = new Pattern(svgNode)
-    setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[0])
-    pattern.displayPattern(peyoteChunk)
-    var ribbon = document.getElementById("ribbon")
-    var swatch = makeSwatch(pattern.beadStyles)
-    var active = showActiveStyle()
-    ribbon.appendChild(active.wrapper)
-    ribbon.appendChild(swatch.wrapper)
-    swatchListener(swatch, active)
+    loadStyles(response => styleCallback(response))
 }
 
 const beadDefs = {
@@ -29,20 +21,40 @@ function getNodes() {
     return [svgNode, beadNode]
 }
 
+function loadStyles(callback) {
+    var request = new XMLHttpRequest()
+    request.overrideMimeType("application/json")
+    request.open("GET", "styles.json")
+    request.onreadystatechange = function ready() {
+        if (request.readyState == 4 && request.status == "200") {
+            callback(request.responseText)
+        }
+    }
+    request.send()
+}
+
+function styleCallback(response) {
+    var styles = JSON.parse(response)
+    pattern.beadStyles = styles
+    pattern.activeStyle = pattern.beadStyles[1]
+    // init?
+    var peyoteChunk = new Chunk(20, 8)
+    setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[0])
+    pattern.displayPattern(peyoteChunk)
+    var ribbon = document.getElementById("ribbon")
+    var swatch = makeSwatch(pattern.beadStyles)
+    var active = showActiveStyle()
+    ribbon.appendChild(active.wrapper)
+    ribbon.appendChild(swatch.wrapper)
+    swatchListener(swatch, active)
+}
+
 class Bead {
     constructor(node) {
         this.node = node.cloneNode(true)
     }
     setStyle(style) {
         this.node.setAttribute("class", style.cssClassName)
-    }
-}
-
-class Style {
-    constructor(index) {
-        this.cssClassName = "bead-" + index
-        this.prettyName = "Matte opaque cornflowerBlue"
-        // this.texture = "matte" // gloss, satin, flat
     }
 }
 
@@ -83,22 +95,14 @@ class Chunk {
 class Pattern {
     constructor(svgNode) {
         this.svg = beadweaverSvg(svgNode)
-        this.beadStyles = this.defaultStyles()
-        this.activeStyle = this.beadStyles[1]
+        // this.beadStyles = this.defaultStyles()
+        // this.activeStyle = this.beadStyles[1]
     }
     displayPattern(chunk) {
         this.svg.appendChild(chunk.beadArrayNode)
         setViewBox(this.svg, chunk.width, chunk.height)
         var main = document.getElementById("main")
         main.appendChild(this.svg)
-    }
-    defaultStyles() {
-        var styles = []
-        for (var i = 0; i < 3; i++) {
-            var style = new Style(i)
-            styles.push(style)
-        }
-        return styles
     }
 }
 
@@ -135,7 +139,7 @@ function paletteClick(pattern, style, active) {
     return function() {
         pattern.activeStyle = style
         active.bead.bead.setStyle(style)
-        active.text = pattern.activeStyle.prettyName
+        active.text.nodeValue = pattern.activeStyle.prettyName
     }
 }
 
@@ -163,7 +167,6 @@ function makeSwatch(styles) {
 
 function swatchListener(swatch, active) {
     swatch.palette.childNodes.forEach(function(button, i) {
-        console.log(active)
         button.addEventListener(
             "click",
             paletteClick(pattern, pattern.beadStyles[i], active)

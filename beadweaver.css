@@ -24,6 +24,7 @@ body {
 #active-bead {
     padding: .2em .3em;
     width: 2.5em;
+    flex-shrink: 0;
 }
 #bead-description {
     font-style: italic;
