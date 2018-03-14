@@ -1,17 +1,62 @@
 [
 {
-    "prettyName": "Matte opaque cornflower blue",
-    "baseColor": "cornflowerBlue",
-    "cssClassName": "bead-0"
+    "prettyName": "Matte opaque light cyan",
+    "baseColor": "lightCyan"
+},
+{
+    "prettyName": "Matte opaque tomato",
+    "baseColor": "tomato"
+},
+{
+    "prettyName": "Matte opaque lawn green",
+    "baseColor": "lawnGreen"
 },
 {
     "prettyName": "Matte opaque dark slate blue",
-    "baseColor": "darkSlateBlue",
-    "cssClassName": "bead-1"
+    "baseColor": "darkSlateBlue"
 },
 {
-    "prettyName": "Matte opaque light cyan",
-    "baseColor": "lightCyan",
-    "cssClassName": "bead-2"
+    "prettyName": "Matte opaque coral",
+    "baseColor": "coral"
+},
+{
+    "prettyName": "Matte opaque indigo",
+    "baseColor": "indigo"
+},
+{
+    "prettyName": "Matte opaque peru",
+    "baseColor": "peru"
+},
+{
+    "prettyName": "Matte opaque plum",
+    "baseColor": "plum"
+},
+{
+    "prettyName": "Matte opaque white",
+    "baseColor": "white"
+},
+{
+    "prettyName": "Matte opaque black",
+    "baseColor": "black"
+},
+{
+    "prettyName": "Matte opaque cornflower blue",
+    "baseColor": "cornflowerBlue"
+},
+{
+    "prettyName": "Matte opaque rosy brown",
+    "baseColor": "rosyBrown"
+},
+{
+    "prettyName": "Matte opaque teal",
+    "baseColor": "teal"
+},
+{
+    "prettyName": "Matte opaque salmon",
+    "baseColor": "salmon"
+},
+{
+    "prettyName": "Matte opaque violet",
+    "baseColor": "violet"
 }
 ]

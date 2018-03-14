@@ -36,10 +36,12 @@ function loadStyles(callback) {
 function styleCallback(response) {
     var styles = JSON.parse(response)
     pattern.beadStyles = styles
-    pattern.activeStyle = pattern.beadStyles[1]
+    pattern.activeStyle = pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)]
+    var beadCss = initStyleCss()
+    styles.map((style, i) => addStyleCss(beadCss, style, i))
     // init?
-    var peyoteChunk = new Chunk(20, 8)
-    setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[0])
+    var peyoteChunk = new Chunk(60, 8)
+    setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)])
     pattern.displayPattern(peyoteChunk)
     var ribbon = document.getElementById("ribbon")
     var swatch = makeSwatch(pattern.beadStyles)
@@ -144,11 +146,12 @@ function paletteClick(pattern, style, active) {
 }
 
 class Palette {
-    constructor(text) {
+    constructor(text, id = null) {
         this.wrapper = document.createElement("div")
         this.wrapper.setAttribute("class", "palette-wrapper")
         var name = document.createElement("div")
         this.palette = document.createElement("div")
+        this.palette.setAttribute("id", id)
         this.palette.setAttribute("class", "palette")
         name.innerHTML += text
         this.wrapper.appendChild(name)
@@ -157,16 +160,19 @@ class Palette {
 }
 
 function makeSwatch(styles) {
-    var swatch = new Palette("Swatch")
+    var swatch = new Palette("Swatch", "swatch")
+    swatch.innerWrapper = document.createElement("div")
+    swatch.innerWrapper.setAttribute("id", "innerWrapper")
+    swatch.palette.appendChild(swatch.innerWrapper)
     var buttons = pattern.beadStyles.map(makeButton())
     buttons.forEach(function(button, i) {
-        swatch.palette.appendChild(button.div)
+        swatch.innerWrapper.appendChild(button.div)
     })
     return swatch
 }
 
 function swatchListener(swatch, active) {
-    swatch.palette.childNodes.forEach(function(button, i) {
+    swatch.innerWrapper.childNodes.forEach(function(button, i) {
         button.addEventListener(
             "click",
             paletteClick(pattern, pattern.beadStyles[i], active)
@@ -218,4 +224,17 @@ function beadweaverSvg(node) {
 function setViewBox(svg, width, height) {
     svg.setAttribute("viewBox", "0 0 " + width + " " + height)
     return svg
+}
+
+function addStyleCss(styleSheet, style, i) {
+    style.cssClassName = "bead-" + i
+    styleSheet.insertRule("." + style.cssClassName + " .beadColor {fill: " + style.baseColor + "}")
+}
+
+function initStyleCss() {
+    // initialize empty css for bead styles
+    var node = document.createElement("style")
+    node.setAttribute("id", "beadCss")
+    document.head.appendChild(node)
+    return node.sheet
 }

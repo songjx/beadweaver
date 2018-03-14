@@ -9,7 +9,7 @@ body {
     font-family: sans-serif;
 }
 #ribbon {
-    width: 16em;
+    width: 17em;
     background-color: #DDD;
     padding: .8em;
 }
@@ -29,13 +29,13 @@ body {
 #bead-description {
     font-style: italic;
     font-size: 85%;
-    margin-left: .8em;
+    margin-left: .4em;
 }
 .palette {
     display: flex;
     align-items: center;
     flex-direction: row;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     border: 1px solid gray;
     border-radius: .6em;
     background-color: #FFF;
@@ -44,25 +44,26 @@ body {
 .palette-wrapper {
     margin: .8em 0;
 }
+#swatch {
+}
+#innerWrapper {
+    flex-wrap: wrap;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    display: inline-flex;
+}
 .button {
-    width: 1.5em;
-    padding: .2em .3em;
-    border-radius: .5em;
-    height: auto;
+    width: 1.67em;
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding: .2em .2em;
 }
 #active-bead, .button {
     display: flex;
     align-items: center;
-}
-/*BEAD STYLES*/
-.bead-0 .beadColor {
-    fill: cornflowerBlue;
-}
-.bead-1 .beadColor {
-    fill: darkSlateBlue;
-}
-.bead-2 .beadColor {
-    fill: lightCyan;
 }
 .beadOutline:hover {
     stroke: indianRed;
