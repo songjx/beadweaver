@@ -1,62 +1,82 @@
 [
 {
     "prettyName": "Matte opaque light cyan",
-    "baseColor": "lightCyan"
+    "baseColor": "lightCyan",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque tomato",
-    "baseColor": "tomato"
+    "baseColor": "tomato",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque lawn green",
-    "baseColor": "lawnGreen"
+    "baseColor": "lawnGreen",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque dark slate blue",
-    "baseColor": "darkSlateBlue"
+    "baseColor": "darkSlateBlue",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque coral",
-    "baseColor": "coral"
+    "baseColor": "coral",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque indigo",
-    "baseColor": "indigo"
+    "baseColor": "indigo",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque peru",
-    "baseColor": "peru"
+    "baseColor": "peru",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque plum",
-    "baseColor": "plum"
+    "baseColor": "plum",
+    "surface": "matte"
 },
 {
-    "prettyName": "Matte opaque white",
-    "baseColor": "white"
+    "prettyName": "Opaque white",
+    "baseColor": "white",
+    "surface": "gloss"
+},
+{
+    "prettyName": "Opaque black",
+    "baseColor": "black",
+    "surface": "gloss"
 },
 {
     "prettyName": "Matte opaque black",
-    "baseColor": "black"
+    "baseColor": "black",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque cornflower blue",
-    "baseColor": "cornflowerBlue"
+    "baseColor": "cornflowerBlue",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque rosy brown",
-    "baseColor": "rosyBrown"
+    "baseColor": "rosyBrown",
+    "surface": "matte"
 },
 {
     "prettyName": "Matte opaque teal",
-    "baseColor": "teal"
+    "baseColor": "teal",
+    "surface": "matte"
 },
 {
-    "prettyName": "Matte opaque salmon",
-    "baseColor": "salmon"
+    "prettyName": "Opaque salmon",
+    "baseColor": "salmon",
+    "surface": "gloss"
 },
 {
-    "prettyName": "Matte opaque violet",
-    "baseColor": "violet"
+    "prettyName": "Opaque violet",
+    "baseColor": "violet",
+    "surface": "gloss"
 }
 ]

@@ -40,7 +40,7 @@ function styleCallback(response) {
     var beadCss = initStyleCss()
     styles.map((style, i) => addStyleCss(beadCss, style, i))
     // init?
-    var peyoteChunk = new Chunk(60, 8)
+    var peyoteChunk = new Chunk(30, 8)
     setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)])
     pattern.displayPattern(peyoteChunk)
     var ribbon = document.getElementById("ribbon")
@@ -229,6 +229,12 @@ function setViewBox(svg, width, height) {
 function addStyleCss(styleSheet, style, i) {
     style.cssClassName = "bead-" + i
     styleSheet.insertRule("." + style.cssClassName + " .beadColor {fill: " + style.baseColor + "}")
+    if (style.surface == "matte") {
+        styleSheet.insertRule("." + style.cssClassName + " .glossHighlight {display:none}")
+    }
+    else if (style.surface == "gloss") {
+        styleSheet.insertRule("." + style.cssClassName + " .beadHighlight {display:none}")
+    }
 }
 
 function initStyleCss() {

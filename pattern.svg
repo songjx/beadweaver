@@ -61,6 +61,26 @@
                 stop-color="#FFF"
                 stop-opacity="0" />
         </linearGradient>
+        <linearGradient
+            gradientUnits="userSpaceOnUse"
+            x1="0"
+            y1="8"
+            x2="0"
+            y2="4"
+            spreadMethod="pad"
+            id="glossGradient">
+            <stop
+                offset="0"
+                stop-color="#ffffff"
+                stop-opacity="0.9" />
+           <stop
+                offset="1"
+                stop-color="#fdfdfd"
+                stop-opacity="0.2" />
+        </linearGradient>
+        <path
+            id="glossHighlight"
+            d="m 11.072815,3.2207018 c 0.555798,0.02349 0.779556,0.2660995 0.891282,1.2972248 0.0985,0.9090432 0.551781,2.8859622 -0.482949,2.9303627 C 10.018683,7.511044 2.8555058,7.560005 1.4848851,7.4366996 0.94231579,7.3878883 0.95410415,5.8782588 1.106637,4.9586187 1.2591699,4.0389786 1.3887448,3.2299131 1.9353404,3.2141439 c 3.0776937,-0.088791 6.6462237,-0.09873 9.1374746,0.00656 z" />
         <g
             id="singleBead">
             <use
@@ -74,6 +94,10 @@
                 href="#beadShape"
                 class="beadHighlight"
                 fill="url(#highlightGradient)" />
+            <use
+                href="#glossHighlight"
+                class="glossHighlight"
+                fill="url(#glossGradient)" />
             <use
                 href="#beadShape"
                 class="beadOutline"
