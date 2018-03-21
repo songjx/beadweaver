@@ -4,9 +4,7 @@
     xmlns="http://www.w3.org/2000/svg"
     id="svg"
     version="1.1"
-    viewBox="0 0 27 16"
-    width="27mm"
-    height="16mm">
+    viewBox="0 0 27 16">
     <defs
         id="defs">
         <path id="beadShape"
@@ -66,7 +64,7 @@
             x1="0"
             y1="8"
             x2="0"
-            y2="4"
+            y2="2.5"
             spreadMethod="pad"
             id="glossGradient">
             <stop
@@ -76,7 +74,7 @@
            <stop
                 offset="1"
                 stop-color="#fdfdfd"
-                stop-opacity="0.2" />
+                stop-opacity="0" />
         </linearGradient>
         <path
             id="glossHighlight"
@@ -107,4 +105,5 @@
                 fill-opacity="0" />
         </g>
     </defs>
+    <!-- <use href="#singleBead" /> uncomment to preview bead -->
 </svg>

@@ -1,4 +1,5 @@
 var pattern
+var level = 0;
 
 window.onload = function() {
     [svgNode, beadNode] = getNodes()
@@ -45,9 +46,11 @@ function styleCallback(response) {
     pattern.displayPattern(peyoteChunk)
     var ribbon = document.getElementById("ribbon")
     var swatch = makeSwatch(pattern.beadStyles)
+    var zoom = zoomButtons()
     var active = showActiveStyle()
     ribbon.appendChild(active.wrapper)
     ribbon.appendChild(swatch.wrapper)
+    ribbon.appendChild(zoom.wrapper)
     swatchListener(swatch, active)
 }
 
@@ -102,9 +105,15 @@ class Pattern {
     }
     displayPattern(chunk) {
         this.svg.appendChild(chunk.beadArrayNode)
-        setViewBox(this.svg, chunk.width, chunk.height)
+        this.width = chunk.width
+        this.height = chunk.height // add chunks later?
+        setViewBox(this.svg, this.width, this.height)
         var main = document.getElementById("main")
-        main.appendChild(this.svg)
+        this.svgWrapper = document.createElement("div")
+        this.svgWrapper.setAttribute("id", "svgWrapper")
+        this.svgWrapper.appendChild(this.svg)
+        main.appendChild(this.svgWrapper)
+        setZoom(this.svgWrapper, 0, this.width/this.height) // initially zoom to fit
     }
 }
 
@@ -221,6 +230,14 @@ function beadweaverSvg(node) {
     return clone
 }
 
+function setZoom(node, level, aspectRatio) {
+    //aspectRatio = width/height
+    let x = 0.2
+    var h = (100-6) * Math.pow((1+x), level)
+    var w = h * aspectRatio
+    node.setAttribute("style", "width:" + w + "vh; height:" + h + "vh;")
+}
+
 function setViewBox(svg, width, height) {
     svg.setAttribute("viewBox", "0 0 " + width + " " + height)
     return svg
@@ -243,4 +260,30 @@ function initStyleCss() {
     node.setAttribute("id", "beadCss")
     document.head.appendChild(node)
     return node.sheet
+}
+
+function zoomButtons() {
+    var zoom = new Palette("Zoom", "zoom-palette")
+    var text = ["-", "fit", "+"]
+    var zoomBtns = text.map(function zoomBtns(text) {
+        var btn = document.createElement("div")
+        btn.setAttribute("class", "zoom-button")
+        var btnText = document.createTextNode(text)
+        btn.appendChild(btnText)
+        zoom.palette.appendChild(btn)
+        return btn
+    })
+    zoomBtns[0].addEventListener("click", function minusClick() {
+        level--
+        setZoom(pattern.svgWrapper, level, pattern.width/pattern.height)
+    })
+    zoomBtns[1].addEventListener("click", function fitClick() {
+        level = 0
+        setZoom(pattern.svgWrapper, level, pattern.width/pattern.height)
+    })
+    zoomBtns[2].addEventListener("click", function plusClick() {
+        level++
+        setZoom(pattern.svgWrapper, level, pattern.width/pattern.height)
+    })
+    return zoom
 }
