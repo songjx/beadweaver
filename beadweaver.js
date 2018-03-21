@@ -47,10 +47,12 @@ function styleCallback(response) {
     var ribbon = document.getElementById("ribbon")
     var swatch = makeSwatch(pattern.beadStyles)
     var zoom = zoomButtons()
+    var paint = paintTools(peyoteChunk)
     var active = showActiveStyle()
     ribbon.appendChild(active.wrapper)
     ribbon.appendChild(swatch.wrapper)
     ribbon.appendChild(zoom.wrapper)
+    ribbon.appendChild(paint.wrapper)
     swatchListener(swatch, active)
 }
 
@@ -275,10 +277,7 @@ function zoomButtons() {
     var zoom = new Palette("Zoom", "zoom-palette")
     var text = ["-", "fit", "+"]
     var zoomBtns = text.map(function zoomBtns(text) {
-        var btn = document.createElement("div")
-        btn.setAttribute("class", "zoom-button")
-        var btnText = document.createTextNode(text)
-        btn.appendChild(btnText)
+        var btn = textButton(text)
         zoom.palette.appendChild(btn)
         return btn
     })
@@ -295,4 +294,22 @@ function zoomButtons() {
         setZoom(pattern.svgWrapper, level, pattern.width/pattern.height)
     })
     return zoom
+}
+
+function textButton(text) {
+    var btn = document.createElement("div")
+    btn.setAttribute("class", "text-button")
+    var btnText = document.createTextNode(text)
+    btn.appendChild(btnText)
+    return btn
+}
+
+function paintTools(chunk) {
+    var paint = new Palette("Paint", "paint-palette")
+    var btn = textButton("fill")
+    paint.palette.appendChild(btn)
+    btn.addEventListener("click", function fillClick() {
+        setBeadRange(0, undefined, 0, undefined, chunk.beadArray, pattern.activeStyle)
+    })
+    return paint
 }

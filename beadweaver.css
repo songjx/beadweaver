@@ -42,7 +42,7 @@ body {
 .palette-wrapper {
     margin: .8em 0;
 }
-#zoom-palette {
+#zoom-palette, #paint-palette {
     justify-content: center;
 }
 #swatch {
@@ -74,13 +74,14 @@ body {
     padding: 3vh 0;
 }
 
-.zoom-button {
+.text-button {
     padding: .2em .5em;
     background-color: #CCC;
     border-radius: .2em;
     margin: 0 .3em;
+    user-select: none;
 }
 
-.zoom-button:hover {
+.text-button:hover {
     background-color: #EEE;
 }
