@@ -66,8 +66,8 @@ body {
     display: flex;
     align-items: center;
 }
-.beadOutline:hover {
-    stroke: indianRed;
+.beadOutline {
+    stroke: #333;
 }
 #svgWrapper {
     margin: auto;

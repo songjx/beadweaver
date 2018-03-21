@@ -247,7 +247,7 @@ function addStyleCss(styleSheet, style, i) {
     style.cssClassName = "bead-" + i
     if (style.baseColor) {
         styleSheet.insertRule("." + style.cssClassName + " .beadColor {fill: " + style.baseColor + "}")
-        styleSheet.insertRule("." + style.cssClassName + " .beadOutline {stroke: #333}")
+        styleSheet.insertRule("." + style.cssClassName + ":hover .beadOutline {stroke: indianRed}")
     } else {
         styleSheet.insertRule("." + style.cssClassName + " .beadColor {fill:none}")
         styleSheet.insertRule("." + style.cssClassName + " .glossHighlight {display:none}")
