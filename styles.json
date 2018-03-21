@@ -1,5 +1,8 @@
 [
 {
+    "prettyName": "Null bead"
+},
+{
     "prettyName": "Matte opaque light cyan",
     "baseColor": "lightCyan",
     "surface": "matte"

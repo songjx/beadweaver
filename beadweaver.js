@@ -245,7 +245,16 @@ function setViewBox(svg, width, height) {
 
 function addStyleCss(styleSheet, style, i) {
     style.cssClassName = "bead-" + i
-    styleSheet.insertRule("." + style.cssClassName + " .beadColor {fill: " + style.baseColor + "}")
+    if (style.baseColor) {
+        styleSheet.insertRule("." + style.cssClassName + " .beadColor {fill: " + style.baseColor + "}")
+        styleSheet.insertRule("." + style.cssClassName + " .beadOutline {stroke: #333}")
+    } else {
+        styleSheet.insertRule("." + style.cssClassName + " .beadColor {fill:none}")
+        styleSheet.insertRule("." + style.cssClassName + " .glossHighlight {display:none}")
+        styleSheet.insertRule("." + style.cssClassName + " .beadHighlight {display:none}")
+        styleSheet.insertRule("." + style.cssClassName + " .beadShadow {display:none}")
+        styleSheet.insertRule("." + style.cssClassName + " .beadOutline {stroke: #CCC}")
+    }
     if (style.surface == "matte") {
         styleSheet.insertRule("." + style.cssClassName + " .glossHighlight {display:none}")
     }
