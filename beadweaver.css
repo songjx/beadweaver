@@ -9,16 +9,21 @@ body {
     font-family: sans-serif;
 }
 #ribbon {
-    width: 11.5em;
-    background-color: #DDD;
-    padding: .8em;
+    width: 13em;
+    background-color: #DEDEDE;
+    padding: .6em .6em;
     flex-shrink: 0;
+    overflow: auto;
 }
 #main {
     flex-basis: 100%;
     padding: 0 1em;
     overflow: auto;
     display: flex;
+}
+#page-name {
+    margin: 0;
+    text-align: center;
 }
 #active-bead {
     padding: .2em .3em;
@@ -27,20 +32,22 @@ body {
 }
 #bead-description {
     font-style: italic;
-    font-size: 85%;
+    font-size: 90%;
     margin-left: .4em;
 }
 .palette {
     display: flex;
     align-items: center;
     flex-direction: row;
-    border: 1px solid gray;
-    border-radius: .6em;
+    border: 1px solid #AAA;
+    border-radius: .5em;
     background-color: #FFF;
     padding: .5em;
 }
 .palette-wrapper {
     margin: .8em 0;
+    user-select: none;
+    font-size: .9em;
 }
 #zoom-palette, #paint-palette {
     justify-content: center;
@@ -57,10 +64,11 @@ body {
     display: inline-flex;
 }
 .button {
-    width: 1.67em;
+    width: 1.8em;
     flex-grow: 0;
     flex-shrink: 0;
     padding: .2em .2em;
+    cursor: pointer;
 }
 #active-bead, .button {
     display: flex;
@@ -80,6 +88,7 @@ body {
     border-radius: .2em;
     margin: 0 .3em;
     user-select: none;
+    cursor: pointer;
 }
 
 .text-button:hover {

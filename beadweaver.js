@@ -41,7 +41,7 @@ function styleCallback(response) {
     var beadCss = initStyleCss()
     styles.map((style, i) => addStyleCss(beadCss, style, i))
     // init?
-    var peyoteChunk = new Chunk(30, 8)
+    var peyoteChunk = new Chunk(90, 8)
     setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)])
     pattern.displayPattern(peyoteChunk)
     var ribbon = document.getElementById("ribbon")
@@ -161,6 +161,7 @@ class Palette {
         this.wrapper = document.createElement("div")
         this.wrapper.setAttribute("class", "palette-wrapper")
         var name = document.createElement("div")
+        name.setAttribute("class", "palette-name")
         this.palette = document.createElement("div")
         this.palette.setAttribute("id", id)
         this.palette.setAttribute("class", "palette")

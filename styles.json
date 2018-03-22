@@ -43,9 +43,10 @@
     "surface": "matte"
 },
 {
-    "prettyName": "Opaque white",
+    "prettyName": "Seed bead, Delica®, glass, opaque matte rainbow white, #11 round",
     "baseColor": "white",
-    "surface": "gloss"
+    "surface": "gloss",
+    "delicaNo": "DB0351"
 },
 {
     "prettyName": "Opaque black",
@@ -81,5 +82,17 @@
     "prettyName": "Opaque violet",
     "baseColor": "violet",
     "surface": "gloss"
+},
+{
+    "prettyName": "Seed Bead, Delica®, glass, Duracoat® opaque jujube, #11 round",
+    "baseColor": "#bc2701",
+    "surface": "gloss",
+    "delicaNo": "DB2119"
+},
+{
+    "prettyName": "Seed bead, Delica®, glass, opaque matte forest green, #11 round",
+    "baseColor": "#4c753e",
+    "surface": "matte",
+    "delicaNo": "DB0797"
 }
 ]
