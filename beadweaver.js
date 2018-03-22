@@ -67,16 +67,11 @@ class Bead {
 
 class Chunk {
     constructor(rows, columns) {
-        this.xPadding = -1
-        this.yPadding = -.3
-        this.width = this.xCoord(columns) - this.xPadding
-        this.height = beadDefs.strokeWidth + beadDefs.height*rows + this.yPadding*rows + (beadDefs.height + this.yPadding/2)/2
         this.beadArrayNode = newSvgGroup()
         this.beadArrayNode.setAttribute("class", "bead-array")
         this.beadArray = Array(rows).fill(undefined).map(function(_, i) {
             var row = Array(columns).fill(undefined).map(function(_, j) {
                 var bead = new Bead(beadNode)
-                bead.node.setAttribute("transform", "translate(" + this.xCoord(j) + " " + this.yCoord(i, j) + ")")
                 this.beadArrayNode.appendChild(bead.node)
                 return bead
             }, this)
@@ -93,11 +88,25 @@ class Chunk {
                         beadDraw(this.beadArray[i][j]))
                 }, this)
             }, this)
+        this.alignBeads()
     }
-    xCoord(col) {return beadDefs.width*col + this.xPadding*col}
-    yCoord(row, col) {return beadDefs.strokeWidth/2 + beadDefs.height*row + this.yPadding*row + (col%2)/2 * (beadDefs.height + this.yPadding/2)}
-
+    alignBeads(xPad=-1, yPad=1, oneDrop=false) {
+        this.beadArray.forEach(
+            function(row, i) {
+                row.forEach(function(bead, j) {
+                    let x = beadDefs.width*j + xPad*j
+                    let dropFactor = (oneDrop ? ((j+1)%2) : (j%2))
+                    let y = beadDefs.height*i + yPad*i + dropFactor/2 * (beadDefs.height + yPad/2)
+                    bead.node.setAttribute("transform", "translate(" + x + " " + y + ")")
+                })
+            })
+            let rows = this.beadArray.length
+            let cols = this.beadArray[0].length
+            this.width = beadDefs.width*cols + xPad*(cols - 1)
+            this.height = beadDefs.height*(rows+.5) + yPad*(rows-.5)
+        }
 }
+
 
 class Pattern {
     constructor(svgNode) {
