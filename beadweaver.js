@@ -1,12 +1,3 @@
-var pattern
-var level = 0;
-
-window.onload = function() {
-    [svgNode, beadNode] = getNodes()
-    pattern = new Pattern(svgNode)
-    loadStyles(response => styleCallback(response))
-}
-
 const beadDefs = {
     width: 13,
     height: 16,
@@ -39,11 +30,11 @@ function styleCallback(response) {
     pattern.beadStyles = styles
     pattern.activeStyle = pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)]
     var beadCss = initStyleCss()
+    var peyoteChunk = new Chunk(90, 8)
     styles.map((style, i) => addStyleCss(beadCss, style, i))
     // init?
-    var peyoteChunk = new Chunk(90, 8)
     setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)])
-    pattern.displayPattern(peyoteChunk)
+    pattern.initPattern(peyoteChunk)
     var ribbon = document.getElementById("ribbon")
     var swatch = makeSwatch(pattern.beadStyles)
     var zoom = zoomButtons()
@@ -54,6 +45,8 @@ function styleCallback(response) {
     ribbon.appendChild(zoom.wrapper)
     ribbon.appendChild(paint.wrapper)
     swatchListener(swatch, active)
+    peyoteChunk.addRemoveRows(-80, top=false)
+    pattern.updatePattern(peyoteChunk)
 }
 
 class Bead {
@@ -61,6 +54,7 @@ class Bead {
         this.node = node.cloneNode(true)
     }
     setStyle(style) {
+        this.style = style
         this.node.setAttribute("class", style.cssClassName)
     }
 }
@@ -90,7 +84,7 @@ class Chunk {
             }, this)
         this.alignBeads()
     }
-    alignBeads(xPad=-1, yPad=1, oneDrop=false) {
+    alignBeads(xPad=-1, yPad=-0.1, oneDrop=false) {
         this.beadArray.forEach(
             function(row, i) {
                 row.forEach(function(bead, j) {
@@ -100,31 +94,54 @@ class Chunk {
                     bead.node.setAttribute("transform", "translate(" + x + " " + y + ")")
                 })
             })
-            let rows = this.beadArray.length
-            let cols = this.beadArray[0].length
-            this.width = beadDefs.width*cols + xPad*(cols - 1)
-            this.height = beadDefs.height*(rows+.5) + yPad*(rows-.5)
+            this.width = beadDefs.width*this.cols + xPad*(this.cols - 1)
+            this.height = beadDefs.height*(this.rows+.5) + yPad*(this.rows-.5)
         }
+    get rows() { return this.beadArray.length }
+    get cols() { return this.beadArray[0].length }
+    addRemoveRows(rows, top=true) {
+        if (rows < 0) {
+            if (top == true) {
+                var removed = this.beadArray.splice(0, -rows)
+            } else {
+                var removed = this.beadArray.splice(rows, -rows)
+            }
+            console.log(removed)
+            removed.forEach( function(row) {
+                row.forEach( function(bead) {
+                    bead.node.remove()
+                })
+            })
+        }
+        // } else {
+        //     if (top == true) {
+        //         this.beadArray.unshift(newRows)
+        //     }
+        // }
+        this.alignBeads()
+        // setZoom()
+    }
 }
-
 
 class Pattern {
     constructor(svgNode) {
         this.svg = beadweaverSvg(svgNode)
-        // this.beadStyles = this.defaultStyles()
-        // this.activeStyle = this.beadStyles[1]
+        this.zoomLevel = 0 // initially zoom to fit
     }
-    displayPattern(chunk) {
+    initPattern(chunk) {
         this.svg.appendChild(chunk.beadArrayNode)
-        this.width = chunk.width
-        this.height = chunk.height // add chunks later?
-        setViewBox(this.svg, this.width, this.height)
         var main = document.getElementById("main")
         this.svgWrapper = document.createElement("div")
         this.svgWrapper.setAttribute("id", "svgWrapper")
         this.svgWrapper.appendChild(this.svg)
         main.appendChild(this.svgWrapper)
-        setZoom(this.svgWrapper, 0, this.width/this.height) // initially zoom to fit
+        this.updatePattern(chunk)
+    }
+    updatePattern(chunk) {
+        this.width = chunk.width
+        this.height = chunk.height // add chunks or other pattern elements (like findings) later?
+        setViewBox(this.svg, this.width, this.height)
+        setZoom(this.svgWrapper, this.zoomLevel, this.width/this.height) // initially zoom to fit
     }
 }
 
@@ -250,6 +267,8 @@ function setZoom(node, level, aspectRatio) {
     node.setAttribute("style", "width:" + w + "vh; height:" + h + "vh;")
 }
 
+function setPatternZoom() { setZoom(pattern.svgWrapper, pattern.zoomLevel, pattern.width/pattern.height) }
+
 function setViewBox(svg, width, height) {
     svg.setAttribute("viewBox", "0 0 " + width + " " + height)
     return svg
@@ -292,16 +311,16 @@ function zoomButtons() {
         return btn
     })
     zoomBtns[0].addEventListener("click", function minusClick() {
-        level--
-        setZoom(pattern.svgWrapper, level, pattern.width/pattern.height)
+        pattern.zoomLevel--
+        setPatternZoom()
     })
     zoomBtns[1].addEventListener("click", function fitClick() {
-        level = 0
-        setZoom(pattern.svgWrapper, level, pattern.width/pattern.height)
+        pattern.zoomLevel = 0
+        setPatternZoom()
     })
     zoomBtns[2].addEventListener("click", function plusClick() {
-        level++
-        setZoom(pattern.svgWrapper, level, pattern.width/pattern.height)
+        pattern.zoomLevel++
+        setPatternZoom()
     })
     return zoom
 }
@@ -322,4 +341,23 @@ function paintTools(chunk) {
         setBeadRange(0, undefined, 0, undefined, chunk.beadArray, pattern.activeStyle)
     })
     return paint
+}
+
+// function detectOS() {
+//     var OSName="Unknown OS";
+//     if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+//     if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+//     if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
+//     if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+//
+//     document.getElementById("ribbon").innerHTML += 'Your OS: '+ OSName
+// }
+
+var pattern
+
+window.onload = function() {
+    // detectOS();
+    [svgNode, beadNode] = getNodes()
+    pattern = new Pattern(svgNode)
+    loadStyles(response => styleCallback(response))
 }

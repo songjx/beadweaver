@@ -20,6 +20,7 @@ body {
     padding: 0 1em;
     overflow: auto;
     display: flex;
+    /* background-color: #999; */
 }
 #page-name {
     margin: 0;
