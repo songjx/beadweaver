@@ -3,34 +3,49 @@ const beadDefs = {
     height: 16,
     strokeWidth: 0.6
 }
+var beadNode
+var svgNode
 
-function getNodes() {
-    var embedSvg = document.getElementById("patternSvg").contentDocument
-    var svgNode = embedSvg.getElementById("svg")
-    var beadNode = svgNode.getElementById("singleBead")
-    beadNode.removeAttribute("id")
-    document.getElementById("patternSvg").remove()
-    return [svgNode, beadNode]
-}
-
-function loadStyles(callback) {
-    var request = new XMLHttpRequest()
-    request.overrideMimeType("application/json")
-    request.open("GET", "styles.json")
-    request.onreadystatechange = function ready() {
-        if (request.readyState == 4 && request.status == "200") {
-            callback(request.responseText)
+function loadNodes() {
+    return new Promise((resolve, reject) => {
+        var request = new XMLHttpRequest()
+        request.open("GET", "pattern.svg")
+        request.onreadystatechange = function ready() {
+            if (request.readyState == 4 && request.status == "200") {
+                // callback(request.responseXML)
+                resolve(request.responseXML)
+            }
         }
-    }
-    request.send()
+        request.send()
+    })
 }
 
-function styleCallback(response) {
-    var styles = JSON.parse(response)
+function loadStyles() {
+    return new Promise((resolve, reject) => {
+        var request = new XMLHttpRequest()
+        request.overrideMimeType("application/json")
+        request.open("GET", "styles.json")
+        request.onreadystatechange = function ready() {
+            if (request.readyState == 4 && request.status == "200") {
+                resolve(request.responseText)
+            }
+        }
+        request.send()
+    })
+}
+
+function init(values) {
+    //nodes
+    svgNode = values[0].getElementById("svg")
+    beadNode = svgNode.getElementById("singleBead")
+    beadNode.removeAttribute("id")
+    pattern = new Pattern(svgNode)
+    //styles
+    var styles = JSON.parse(values[1])
     pattern.beadStyles = styles
     pattern.activeStyle = pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)]
     var beadCss = initStyleCss()
-    var peyoteChunk = new Chunk(90, 8)
+    var peyoteChunk = new Chunk(90, 8, beadNode)
     styles.map((style, i) => addStyleCss(beadCss, style, i))
     // init?
     setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)])
@@ -45,7 +60,7 @@ function styleCallback(response) {
     ribbon.appendChild(zoom.wrapper)
     ribbon.appendChild(paint.wrapper)
     swatchListener(swatch, active)
-    peyoteChunk.addRemoveRows(-80, top=false)
+    peyoteChunk.addRemoveRows(-60, top=false)
     pattern.updatePattern(peyoteChunk)
 }
 
@@ -60,7 +75,7 @@ class Bead {
 }
 
 class Chunk {
-    constructor(rows, columns) {
+    constructor(rows, columns, beadNode) {
         this.beadArrayNode = newSvgGroup()
         this.beadArrayNode.setAttribute("class", "bead-array")
         this.beadArray = Array(rows).fill(undefined).map(function(_, i) {
@@ -106,7 +121,7 @@ class Chunk {
             } else {
                 var removed = this.beadArray.splice(rows, -rows)
             }
-            console.log(removed)
+            // console.log(removed)
             removed.forEach( function(row) {
                 row.forEach( function(bead) {
                     bead.node.remove()
@@ -353,11 +368,7 @@ function paintTools(chunk) {
 //     document.getElementById("ribbon").innerHTML += 'Your OS: '+ OSName
 // }
 
-var pattern
-
 window.onload = function() {
     // detectOS();
-    [svgNode, beadNode] = getNodes()
-    pattern = new Pattern(svgNode)
-    loadStyles(response => styleCallback(response))
+    Promise.all([loadNodes(), loadStyles()]).then(values => init(values))
 }
