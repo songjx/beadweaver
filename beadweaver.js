@@ -3,8 +3,6 @@ const beadDefs = {
     height: 16,
     strokeWidth: 0.6
 }
-var beadNode
-var svgNode
 
 function loadNodes() {
     return new Promise((resolve, reject) => {
@@ -37,29 +35,28 @@ function loadStyles() {
 function init(values) {
     //nodes
     svgNode = values[0].getElementById("svg")
-    beadNode = svgNode.getElementById("singleBead")
+    beadNode = svgNode.getElementById("singleBead").cloneNode(true)
     beadNode.removeAttribute("id")
     pattern = new Pattern(svgNode)
     //styles
-    var styles = JSON.parse(values[1])
-    pattern.beadStyles = styles
-    pattern.activeStyle = pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)]
+    const styles = JSON.parse(values[1])
+    pattern.activeStyle = styles[Math.floor(Math.random()*styles.length)]
     var beadCss = initStyleCss()
     var peyoteChunk = new Chunk(90, 8, beadNode)
     styles.map((style, i) => addStyleCss(beadCss, style, i))
     // init?
-    setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, pattern.beadStyles[Math.floor(Math.random()*pattern.beadStyles.length)])
+    setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, styles[Math.floor(Math.random()*styles.length)])
     pattern.initPattern(peyoteChunk)
     var ribbon = document.getElementById("ribbon")
-    var swatch = makeSwatch(pattern.beadStyles)
+    var swatch = makeSwatch(styles)
     var zoom = zoomButtons()
     var paint = paintTools(peyoteChunk)
-    var active = showActiveStyle()
+    var active = showActiveStyle(svgNode)
     ribbon.appendChild(active.wrapper)
     ribbon.appendChild(swatch.wrapper)
     ribbon.appendChild(zoom.wrapper)
     ribbon.appendChild(paint.wrapper)
-    swatchListener(swatch, active)
+    swatchListener(swatch, active, styles)
     peyoteChunk.addRemoveRows(-60, top=false)
     pattern.updatePattern(peyoteChunk)
 }
@@ -116,17 +113,9 @@ class Chunk {
     get cols() { return this.beadArray[0].length }
     addRemoveRows(rows, top=true) {
         if (rows < 0) {
-            if (top == true) {
-                var removed = this.beadArray.splice(0, -rows)
-            } else {
-                var removed = this.beadArray.splice(rows, -rows)
-            }
-            // console.log(removed)
-            removed.forEach( function(row) {
-                row.forEach( function(bead) {
-                    bead.node.remove()
-                })
-            })
+            const removed = top ? this.beadArray.splice(0, -rows)
+                : this.beadArray.splice(rows, -rows)
+            removed.forEach(row => row.forEach(bead => bead.node.remove))
         }
         // } else {
         //     if (top == true) {
@@ -171,15 +160,8 @@ function setBeadRange(row1, row2, column1, column2, beadArray, style) {
     })
 }
 
-function newSvgGroup() {
-    return document.createElementNS("http://www.w3.org/2000/svg", "g")
-}
-
-function beadClick(bead) {
-    return function() {
-        bead.setStyle(pattern.activeStyle)
-    }
-}
+const newSvgGroup = () => document.createElementNS("http://www.w3.org/2000/svg", "g")
+const beadClick = bead => () => bead.setStyle(pattern.activeStyle)
 
 function beadDraw(bead) {
     return function(event) {
@@ -217,25 +199,25 @@ function makeSwatch(styles) {
     swatch.innerWrapper = document.createElement("div")
     swatch.innerWrapper.setAttribute("id", "innerWrapper")
     swatch.palette.appendChild(swatch.innerWrapper)
-    var buttons = pattern.beadStyles.map(makeButton())
+    var buttons = styles.map(makeButton())
     buttons.forEach(function(button, i) {
         swatch.innerWrapper.appendChild(button.div)
     })
     return swatch
 }
 
-function swatchListener(swatch, active) {
+function swatchListener(swatch, active, styles) {
     swatch.innerWrapper.childNodes.forEach(function(button, i) {
         button.addEventListener(
             "click",
-            paletteClick(pattern, pattern.beadStyles[i], active)
+            paletteClick(pattern, styles[i], active)
         )
     })
 }
 
-function showActiveStyle() {
+function showActiveStyle(svgNode) {
     var active = new Palette("Active Bead")
-    active.bead = new OneBead()
+    active.bead = new OneBead(svgNode, beadNode)
     active.bead.div.setAttribute("id", "active-bead")
     active.bead.bead.setStyle(pattern.activeStyle)
     var description = document.createElement("div")
@@ -249,7 +231,7 @@ function showActiveStyle() {
 
 class OneBead {
     // a div with an svg with one bead
-    constructor() {
+    constructor(svgNode, beadNode) {
         this.div = document.createElement("div")
         var svg = setViewBox(beadweaverSvg(svgNode), beadDefs.width, beadDefs.height)
         this.bead = new Bead(beadNode)
@@ -260,7 +242,7 @@ class OneBead {
 
 function makeButton() {
     return function makeButtonCallback(style) {
-        var button = new OneBead()
+        var button = new OneBead(svgNode, beadNode)
         button.bead.setStyle(style)
         button.div.setAttribute("class", "button")
         return button
@@ -358,17 +340,6 @@ function paintTools(chunk) {
     return paint
 }
 
-// function detectOS() {
-//     var OSName="Unknown OS";
-//     if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
-//     if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
-//     if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
-//     if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
-//
-//     document.getElementById("ribbon").innerHTML += 'Your OS: '+ OSName
-// }
-
 window.onload = function() {
-    // detectOS();
     Promise.all([loadNodes(), loadStyles()]).then(values => init(values))
 }
