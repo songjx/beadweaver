@@ -6,11 +6,10 @@ const beadDefs = {
 
 function loadNodes() {
     return new Promise((resolve, reject) => {
-        var request = new XMLHttpRequest()
+        const request = new XMLHttpRequest()
         request.open("GET", "pattern.svg")
         request.onreadystatechange = function ready() {
             if (request.readyState == 4 && request.status == "200") {
-                // callback(request.responseXML)
                 resolve(request.responseXML)
             }
         }
@@ -20,7 +19,7 @@ function loadNodes() {
 
 function loadStyles() {
     return new Promise((resolve, reject) => {
-        var request = new XMLHttpRequest()
+        const request = new XMLHttpRequest()
         request.overrideMimeType("application/json")
         request.open("GET", "styles.json")
         request.onreadystatechange = function ready() {
@@ -41,17 +40,17 @@ function init(values) {
     //styles
     const styles = JSON.parse(values[1])
     pattern.activeStyle = styles[Math.floor(Math.random()*styles.length)]
-    var beadCss = initStyleCss()
-    var peyoteChunk = new Chunk(90, 8, beadNode)
+    const beadCss = initStyleCss()
     styles.map((style, i) => addStyleCss(beadCss, style, i))
     // init?
+    const peyoteChunk = new Chunk(90, 8, beadNode)
     setBeadRange(0, undefined, 0, undefined, peyoteChunk.beadArray, styles[Math.floor(Math.random()*styles.length)])
     pattern.initPattern(peyoteChunk)
-    var ribbon = document.getElementById("ribbon")
-    var swatch = makeSwatch(styles)
-    var zoom = zoomButtons()
-    var paint = paintTools(peyoteChunk)
-    var active = showActiveStyle(svgNode)
+    const ribbon = document.getElementById("ribbon")
+    const swatch = makeSwatch(styles)
+    const zoom = zoomButtons()
+    const paint = paintTools(peyoteChunk)
+    const active = showActiveStyle(svgNode)
     ribbon.appendChild(active.wrapper)
     ribbon.appendChild(swatch.wrapper)
     ribbon.appendChild(zoom.wrapper)
@@ -76,8 +75,8 @@ class Chunk {
         this.beadArrayNode = newSvgGroup()
         this.beadArrayNode.setAttribute("class", "bead-array")
         this.beadArray = Array(rows).fill(undefined).map(function(_, i) {
-            var row = Array(columns).fill(undefined).map(function(_, j) {
-                var bead = new Bead(beadNode)
+            const row = Array(columns).fill(undefined).map(function(_, j) {
+                const bead = new Bead(beadNode)
                 this.beadArrayNode.appendChild(bead.node)
                 return bead
             }, this)
@@ -134,7 +133,7 @@ class Pattern {
     }
     initPattern(chunk) {
         this.svg.appendChild(chunk.beadArrayNode)
-        var main = document.getElementById("main")
+        const main = document.getElementById("main")
         this.svgWrapper = document.createElement("div")
         this.svgWrapper.setAttribute("id", "svgWrapper")
         this.svgWrapper.appendChild(this.svg)
@@ -151,14 +150,16 @@ class Pattern {
 
 function setBeadRange(row1, row2, column1, column2, beadArray, style) {
     // set style on a range of beads in an array
-    var beadRowRange = beadArray.slice(row1, row2)
+    const beadRowRange = beadArray.slice(row1, row2)
     beadRowRange.forEach(function(row) {
-        var rowSlice = row.slice(column1, column2)
+        const rowSlice = row.slice(column1, column2)
         rowSlice.forEach(function(bead) {
             bead.setStyle(style)
         })
     })
 }
+
+const fill = (beadArray, style) => setBeadRange(0, undefined, 0, undefined, beadArray, style)
 
 const newSvgGroup = () => document.createElementNS("http://www.w3.org/2000/svg", "g")
 const beadClick = bead => () => bead.setStyle(pattern.activeStyle)
@@ -183,7 +184,7 @@ class Palette {
     constructor(text, id = null) {
         this.wrapper = document.createElement("div")
         this.wrapper.setAttribute("class", "palette-wrapper")
-        var name = document.createElement("div")
+        const name = document.createElement("div")
         name.setAttribute("class", "palette-name")
         this.palette = document.createElement("div")
         this.palette.setAttribute("id", id)
@@ -195,11 +196,11 @@ class Palette {
 }
 
 function makeSwatch(styles) {
-    var swatch = new Palette("Swatch", "swatch")
+    const swatch = new Palette("Swatch", "swatch")
     swatch.innerWrapper = document.createElement("div")
     swatch.innerWrapper.setAttribute("id", "innerWrapper")
     swatch.palette.appendChild(swatch.innerWrapper)
-    var buttons = styles.map(makeButton())
+    const buttons = styles.map(makeButton())
     buttons.forEach(function(button, i) {
         swatch.innerWrapper.appendChild(button.div)
     })
@@ -216,11 +217,11 @@ function swatchListener(swatch, active, styles) {
 }
 
 function showActiveStyle(svgNode) {
-    var active = new Palette("Active Bead")
+    const active = new Palette("Active Bead")
     active.bead = new OneBead(svgNode, beadNode)
     active.bead.div.setAttribute("id", "active-bead")
     active.bead.bead.setStyle(pattern.activeStyle)
-    var description = document.createElement("div")
+    const description = document.createElement("div")
     description.setAttribute("id", "bead-description")
     active.text = document.createTextNode(pattern.activeStyle.prettyName)
     description.appendChild(active.text)
@@ -233,7 +234,7 @@ class OneBead {
     // a div with an svg with one bead
     constructor(svgNode, beadNode) {
         this.div = document.createElement("div")
-        var svg = setViewBox(beadweaverSvg(svgNode), beadDefs.width, beadDefs.height)
+        const svg = setViewBox(beadweaverSvg(svgNode), beadDefs.width, beadDefs.height)
         this.bead = new Bead(beadNode)
         svg.appendChild(this.bead.node)
         this.div.appendChild(svg)
@@ -242,7 +243,7 @@ class OneBead {
 
 function makeButton() {
     return function makeButtonCallback(style) {
-        var button = new OneBead(svgNode, beadNode)
+        const button = new OneBead(svgNode, beadNode)
         button.bead.setStyle(style)
         button.div.setAttribute("class", "button")
         return button
@@ -250,7 +251,7 @@ function makeButton() {
 }
 
 function beadweaverSvg(node) {
-    var clone = node.cloneNode(true)
+    const clone = node.cloneNode(true)
     clone.setAttribute("width", "100%")
     clone.setAttribute("height", "100%")
     return clone
@@ -259,8 +260,8 @@ function beadweaverSvg(node) {
 function setZoom(node, level, aspectRatio) {
     //aspectRatio = width/height
     let x = 0.2
-    var h = (100-6) * Math.pow((1+x), level)
-    var w = h * aspectRatio
+    const h = (100-6) * Math.pow((1+x), level)
+    const w = h * aspectRatio
     node.setAttribute("style", "width:" + w + "vh; height:" + h + "vh;")
 }
 
@@ -293,17 +294,17 @@ function addStyleCss(styleSheet, style, i) {
 
 function initStyleCss() {
     // initialize empty css for bead styles
-    var node = document.createElement("style")
+    const node = document.createElement("style")
     node.setAttribute("id", "beadCss")
     document.head.appendChild(node)
     return node.sheet
 }
 
 function zoomButtons() {
-    var zoom = new Palette("Zoom", "zoom-palette")
-    var text = ["-", "fit", "+"]
-    var zoomBtns = text.map(function zoomBtns(text) {
-        var btn = textButton(text)
+    const zoom = new Palette("Zoom", "zoom-palette")
+    const text = ["-", "fit", "+"]
+    const zoomBtns = text.map(function zoomBtns(text) {
+        const btn = textButton(text)
         zoom.palette.appendChild(btn)
         return btn
     })
@@ -323,20 +324,18 @@ function zoomButtons() {
 }
 
 function textButton(text) {
-    var btn = document.createElement("div")
+    const btn = document.createElement("div")
     btn.setAttribute("class", "text-button")
-    var btnText = document.createTextNode(text)
+    const btnText = document.createTextNode(text)
     btn.appendChild(btnText)
     return btn
 }
 
 function paintTools(chunk) {
-    var paint = new Palette("Paint", "paint-palette")
-    var btn = textButton("fill")
+    const paint = new Palette("Paint", "paint-palette")
+    const btn = textButton("fill")
     paint.palette.appendChild(btn)
-    btn.addEventListener("click", function fillClick() {
-        setBeadRange(0, undefined, 0, undefined, chunk.beadArray, pattern.activeStyle)
-    })
+    btn.addEventListener("click", () => fill(chunk.beadArray, pattern.activeStyle))
     return paint
 }
 
